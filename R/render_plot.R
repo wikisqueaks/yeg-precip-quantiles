@@ -77,20 +77,24 @@ p_cumul <- ggplot(envelopes, aes(x = doy)) +
   geom_text(data = label_data, aes(x = doy, y = y, label = label),
             hjust = 0, nudge_x = 1, size = 3, colour = "steelblue") +
   geom_line(data = current, aes(x = doy, y = CTP), colour = "firebrick", linewidth = 0.6) +
+  geom_text(data = current |> filter(doy == max(doy)),
+            aes(x = doy, y = CTP, label = as.character(current_year)),
+            hjust = 0, nudge_x = 1, size = 3, colour = "firebrick") +
   scale_x_date(date_labels = "%b", date_breaks = "1 month",
                limits = c(make_date(2000, 1, 1), make_date(2001, 1, 20))) +
   labs(
     x     = NULL,
     y     = "Cumulative precipitation (mm)",
-    title = paste0("Cumulative Precipitation — ", current_year, " vs Historical Percentiles")
+    title = paste0("Cumulative Precipitation: Historical Percentiles (1961 - Present)"),
+    subtitle = "Edmonton, AB"
   ) +
   theme_classic() +
   theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
 
 p_bars <- ggplot(daily_bars, aes(x = doy, y = total_precip)) +
-  geom_col(fill = "firebrick", alpha = 0.7) +
+  geom_col(fill = "blue4", alpha = 0.7) +
   x_scale +
-  labs(x = NULL, y = "Daily (mm)") +
+  labs(x = NULL, y = "2026 Daily (mm)") +
   theme_classic()
 
 p_cumul / p_bars + plot_layout(heights = c(3, 1))
