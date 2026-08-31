@@ -51,9 +51,7 @@ Run `R/render_plot_extended.R` to generate the plot. Current output saves to `ou
 
 ## Scripts
 
-- `R/render_plot.R` — Original 1961–present baseline (station 27214 only)
-- `R/render_plot_with_grid.R` — Same as above with gridlines
-- `R/render_plot_extended.R` — Extended 1938–present baseline with data quality filtering (recommended)
+- `R/render_plot_extended.R` — Generates plot with 1938–present baseline and data quality filtering
 - `R/calculate_cumulative_precip.R` — Helper: computes cumulative precipitation by year
 - `R/prep_historic_data.R` — Helper: reshapes historical data for percentile calculation
 
