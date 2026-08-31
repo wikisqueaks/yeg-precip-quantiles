@@ -6,6 +6,14 @@ Plots Edmonton's current year cumulative precipitation against 88 years of histo
 
 Run `R/render_plot_extended.R` to generate the plot. Current output saves to `outputs/YEG_2026_CUMUL_PRECIP_YTD_EXTENDED_<YYYYMMDD>.png`.
 
+### Example Output
+
+![Cumulative Precipitation: Historical Percentiles (1938 - Present)](outputs/YEG_2026_CUMUL_PRECIP_YTD_EXTENDED_20260830.png)
+
+**Top panel**: Cumulative precipitation with historical percentile bands (colored regions) spanning 88 years of baseline data. The dotted median line (50th percentile) shows typical accumulation. The solid black line traces 2026 year-to-date totals, currently tracking above the median.
+
+**Bottom panel**: Daily precipitation for 2026, showing when rain events occurred throughout the year.
+
 ## Data Sources
 
 **Station 1867 (EDMONTON CITY CENTRE A)**
