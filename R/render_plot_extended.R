@@ -7,7 +7,6 @@ library(patchwork)
 library(purrr)
 library(RColorBrewer)
 
-source("R/calculate_cumulative_precip.R")
 source("R/prep_historic_data.R")
 
 # Load cached 1867 data and live 27214 data

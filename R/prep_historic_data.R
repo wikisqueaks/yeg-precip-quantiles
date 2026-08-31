@@ -1,3 +1,5 @@
+source("R/calculate_cumulative_precip.R")
+
 prep_historic_data <- function(weathercan) {
   calculate_cumulative_precip(weathercan) |>
     dplyr::select(-date) |>
