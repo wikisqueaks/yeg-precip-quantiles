@@ -1,0 +1,7 @@
+How wet is 2026 shaping up? 🌧️
+
+Edmonton's year-to-date cumulative precipitation compared against 88 years of historical data (1938–present). The colored bands show where precipitation typically falls—tracking where 2026 stacks up against the norm.
+
+Built with historical climate data from @ECCCWeather. Methods and code: github.com/wikisqueaks/yeg-precip-quantiles
+
+#ClimateData #DataViz #Edmonton #Weather

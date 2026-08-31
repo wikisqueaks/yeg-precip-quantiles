@@ -89,7 +89,14 @@ current_label <- as.character(current_year)
 line_colours <- c("Median (50th)" = "grey30")
 current_yr_col <- "black"
 
+# Generate grid dates (every 1 day for x-axis) and grid values (every 10mm for y-axis)
+grid_dates <- seq.Date(make_date(2000, 1, 1), make_date(2001, 1, 1), by = "1 day")
+grid_precips <- seq(0, 800, by = 10)
+
 p_cumul <- ggplot() +
+  geom_vline(xintercept = grid_dates, colour = "grey80", linewidth = 0.1, alpha = 0.5) +
+  geom_segment(aes(x = make_date(2000, 1, 1), xend = make_date(2001, 1, 1), y = grid_precips, yend = grid_precips),
+               colour = "grey80", linewidth = 0.1, alpha = 0.5, data = tibble::tibble(grid_precips = grid_precips)) +
   geom_ribbon(data = bands, aes(x = doy, ymin = ymin, ymax = ymax, fill = band), alpha = 0.5) +
   scale_fill_manual(name = "Historic\nPercentile", values = band_colours) +
   geom_line(
@@ -102,7 +109,7 @@ p_cumul <- ggplot() +
   ) +
   geom_text(
     data = current |> filter(doy == max(doy)),
-    aes(x = doy, y = CTP, label = current_label),
+    aes(x = doy - 15, y = CTP + 14, label = current_label),
     hjust = 0, nudge_x = 1, size = 3, colour = current_yr_col
   ) +
   scale_colour_manual(name = NULL, values = line_colours) +
@@ -117,7 +124,7 @@ p_cumul <- ggplot() +
     subtitle = "Edmonton, AB"
   ) +
   theme_classic() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), legend.position = "right", legend.justification = c(1, 0.35))
 
 p_bars <- ggplot(daily_bars, aes(x = doy, y = total_precip)) +
   geom_col(fill = "blue4", alpha = 0.7) +
@@ -128,4 +135,4 @@ p_bars <- ggplot(daily_bars, aes(x = doy, y = total_precip)) +
 p <- p_cumul / p_bars + plot_layout(heights = c(3, 1))
 
 
-ggsave(paste0("outputs/YEG_2026_CUMUL_PRECIP_YTD_", format(Sys.Date(), "%Y%m%d"), ".png"), p, width = 735, height = 538, units = "px", dpi = 96)
+ggsave(paste0("outputs/YEG_2026_CUMUL_PRECIP_YTD_GRID_", format(Sys.Date(), "%Y%m%d"), ".png"), p, width = 2880, height = 2160, units = "px", dpi = 400)

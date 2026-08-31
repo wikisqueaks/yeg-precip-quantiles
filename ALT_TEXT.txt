@@ -1,0 +1,7 @@
+Chart: "Cumulative Precipitation: Historical Percentiles (1938 - Present)" for Edmonton, AB.
+
+Top panel: A stacked area chart with six colored bands representing historical precipitation percentile ranges (5th–10th, 10th–25th, 25th–50th, 50th–75th, 75th–90th, 90th–95th) across the calendar year. Colors transition from brown/orange (dry conditions) to blue (wet conditions). A dotted grey line shows the median (50th percentile). A black solid line overlaid represents 2026 year-to-date cumulative precipitation, labeled "2026" at December 31.
+
+Bottom panel: A bar chart showing 2026 daily precipitation totals (mm) by day, with sparse bars indicating precipitation events throughout the year.
+
+Context: The plot compares current year precipitation accumulation against 88 years of historical baseline data (1938–2025), accounting for data quality and leap-year discontinuities. Percentile bands show the range of historical conditions; the 2026 line allows comparison to historical norms.

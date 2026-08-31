@@ -10,13 +10,25 @@ library(RColorBrewer)
 source("R/calculate_cumulative_precip.R")
 source("R/prep_historic_data.R")
 
-# Station 27214 (Edmonton Blatchford), daily records 1961–present
-raw <- weather_dl(
+# Load cached 1867 data and live 27214 data
+data_1867 <- readRDS("data/raw/EDM1867.rds")
+
+# Download live 27214 data (current)
+data_27214 <- weather_dl(
   station_ids = 27214,
   start       = "1961-01-01",
   end         = format(Sys.Date(), "%Y-%m-%d"),
   interval    = "day"
 )
+
+# Combine: use 1867 before 1996-01-01, then 27214 from 1996 onward
+cutover_date <- make_date(1996, 1, 1)
+
+raw <- bind_rows(
+  data_1867 |> filter(date < cutover_date) |> select(date, total_precip),
+  data_27214 |> filter(date >= cutover_date) |> select(date, total_precip)
+) |>
+  arrange(date)
 
 df <- raw |>
   select(date, total_precip) |>
@@ -37,8 +49,17 @@ current <- df |>
   ) |>
   select(doy = date, CTP = cum_precip)
 
-envelopes <- prep_historic_data(df |> filter(year < current_year)) |>
+# Filter to complete years (≥360 days) to ensure monotonic percentiles
+complete_years <- df |>
+  filter(year < current_year) |>
+  group_by(year) |>
+  summarise(n_days = n(), .groups = "drop") |>
+  filter(n_days >= 360) |>
+  pull(year)
+
+envelopes <- prep_historic_data(df |> filter(year %in% complete_years)) |>
   pivot_longer(2:last_col(), names_to = "month_day", values_to = "cum_precip") |>
+  filter(!(month_day == "2-29")) |>
   group_by(doy = month_day) |>
   summarise(
     p5     = quantile(cum_precip, 0.05, na.rm = TRUE),
@@ -84,7 +105,6 @@ names(band_colours) <- c(
   "50th-75th", "75th-90th", "90th-95th"
 )
 
-
 current_label <- as.character(current_year)
 line_colours <- c("Median (50th)" = "grey30")
 current_yr_col <- "black"
@@ -98,7 +118,7 @@ p_cumul <- ggplot() +
   ) +
   geom_line(
     data = current, aes(x = doy, y = CTP),
-    colour = current_yr_col, linewidth = 0.5, linetype = "solid"
+    colour = current_yr_col, linewidth = 0.3, linetype = "solid"
   ) +
   geom_text(
     data = current |> filter(doy == max(doy)),
@@ -113,11 +133,16 @@ p_cumul <- ggplot() +
   labs(
     x = NULL,
     y = "Cumulative precipitation (mm)",
-    title = paste0("Cumulative Precipitation: Historical Percentiles (1961 - Present)"),
+    title = paste0("Cumulative Precipitation: Historical Percentiles (1938 - Present)"),
     subtitle = "Edmonton, AB"
   ) +
   theme_classic() +
-  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(), 
+        legend.position = "right", 
+        legend.justification = c(1, 0.7),
+        legend.key.spacing.y = unit(2, "mm")
+        )
 
 p_bars <- ggplot(daily_bars, aes(x = doy, y = total_precip)) +
   geom_col(fill = "blue4", alpha = 0.7) +
@@ -127,5 +152,4 @@ p_bars <- ggplot(daily_bars, aes(x = doy, y = total_precip)) +
 
 p <- p_cumul / p_bars + plot_layout(heights = c(3, 1))
 
-
-ggsave(paste0("outputs/YEG_2026_CUMUL_PRECIP_YTD_", format(Sys.Date(), "%Y%m%d"), ".png"), p, width = 735, height = 538, units = "px", dpi = 96)
+ggsave(paste0("outputs/YEG_2026_CUMUL_PRECIP_YTD_EXTENDED_", format(Sys.Date(), "%Y%m%d"), ".png"), p, width = 1350, height = 1080, units = "px", dpi = 150)
