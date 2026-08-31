@@ -2,4 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.posit/assistant
+.posit/
+.claude/
+.vscode/
